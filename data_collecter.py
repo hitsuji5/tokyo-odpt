@@ -2,6 +2,7 @@ import requests
 import time
 from datetime import datetime
 import csv
+import os
 from google.cloud import storage
 # from oauth2client.client import GoogleCredentials
 # credentials = GoogleCredentials.get_application_default()
@@ -27,6 +28,7 @@ def upload_file(file, filename, retry_num=5):
     for _ in range(retry_num):
         try:
             blob.upload_from_file(file)
+            print("Succeed to upload {}".format(output_file))
             return True
         except:
             print("Fail to upload {}".format(output_file))
@@ -43,9 +45,11 @@ class ODPTClient(object):
         for _ in range(retry_num):
             try:
                 r = requests.get(API_URL + self.rdf_type_bus, params=payload)
-                return r.json()
+                data = r.json()
+                print("Collect {} bus data".format(len(data)))
+                return data
             except:
-                print("Fail to connect Bus API")
+                time.sleep(0.5)
                 continue
         return None
 
@@ -62,10 +66,11 @@ if __name__ == '__main__':
         for i in range(NUM_REQUEST):
             data = odpt_client.get_bus_state()
             if data is None:
+                print("Fail to connect Bus API...")
                 time.sleep(3)
+                print("Retry")
                 continue
 
-            print(len(data))
             if i == 0:
                 writer.writerow(bus_res_keys)
             writer.writerows([[record.get(key, None) for key in bus_res_keys] for record in data])
@@ -73,6 +78,6 @@ if __name__ == '__main__':
 
         f.close()
         upload_file(open(output_file, 'rb'), output_file)
-
+        os.remove(output_file)
 
 
