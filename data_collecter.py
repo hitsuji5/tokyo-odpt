@@ -4,20 +4,7 @@ from datetime import datetime
 import csv
 import os
 from google.cloud import storage
-# from oauth2client.client import GoogleCredentials
-# credentials = GoogleCredentials.get_application_default()
-# from googleapiclient import discovery
-# storage = discovery.build('storage', 'v1', credentials=credentials)
-
-bus_res_keys = [
-    u'dc:date', u'dct:valid', u'odpt:busroute', u'odpt:busroutePattern', u'odpt:busNumber', u'odpt:operator',
-    u'odpt:startingBusstopPole', u'odpt:terminalBusstopPole', u'odpt:fromBusstopPole', u'odpt:toBusstopPole',
-    u'odpt:fromBusstopPoleTime', u'geo:lat', u'geo:long', u'odpt:azimuth', u'odpt:doorStatus', u'odpt:progress', u'odpt:speed'
-]
-PROJECT_ID = 'tokyo-odpt'
-BUCKET = 'odpt-data'
-ACCESS_TOKEN = ''
-API_URL = 'https://api-tokyochallenge.odpt.org/api/v4/'
+from config import PROJECT_ID, BUCKET, ACCESS_TOKEN, API_URL, bus_res_keys
 NUM_REQUEST = 240
 FREQUENCY = 13
 
