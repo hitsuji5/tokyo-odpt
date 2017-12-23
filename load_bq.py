@@ -32,7 +32,6 @@ if __name__ == '__main__':
     for blob in bucket.list_blobs():
         jobname = blob.name
         uri = "gs://{bucket}/{filename}".format(bucket=BUCKET, filename=blob.name)
-        job = client.load_table_from_storage(
-                jobname, uri, table_ref, job_config=load_config)
+        job = client.load_table_from_storage(jobname, uri, table_ref, job_config=load_config)
         job.begin()
         job.result()
