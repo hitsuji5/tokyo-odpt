@@ -23,7 +23,6 @@ def create_bq_schema():
 if __name__ == '__main__':
     client = storage.Client(project=PROJECT_ID)
     bucket = client.bucket(BUCKET)
-    print bucket.list_blobs()
 
     client = bigquery.Client()
     table_ref = client.dataset('bus').table('bus')
@@ -32,9 +31,9 @@ if __name__ == '__main__':
     load_config.skip_leading_rows = 1
     load_config.schema = create_bq_schema()
 
-    for filename in bucket.list_blobs():
-        jobname = filename
-        uri = "gs://{bucket}/{filename}".format(bucket=BUCKET, filename=filename)
+    for blob in bucket.list_blobs():
+        jobname = blob.name
+        uri = "gs://{bucket}/{filename}".format(bucket=BUCKET, filename=blob.name)
         job = client.load_table_from_storage(
                 jobname, uri, table_ref, job_config=load_config)
         job.begin()
