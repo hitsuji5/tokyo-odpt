@@ -21,7 +21,7 @@ def create_bq_schema():
     return schema
 
 if __name__ == '__main__':
-    client = bigquery.Client()
+    client = bigquery.Client(project=PROJECT_ID)
     table_ref = client.dataset('bus').table('bus')
 
     load_config = LoadJobConfig()
@@ -30,8 +30,7 @@ if __name__ == '__main__':
 
     bucket = storage.Client(project=PROJECT_ID).bucket(BUCKET)
     for blob in bucket.list_blobs():
-        jobname = blob.name
         uri = "gs://{bucket}/{filename}".format(bucket=BUCKET, filename=blob.name)
-        job = client.load_table_from_uri(jobname, uri, table_ref, job_config=load_config)
-        job.begin()
+        print("Loading {}".format(blob.name))
+        job = client.load_table_from_uri(uri, table_ref, job_config=load_config)
         job.result()
